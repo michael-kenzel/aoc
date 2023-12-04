@@ -1,0 +1,26 @@
+# cflags = -std=c++23 -Wall -Wextra -g -O0
+cflags = /std:c++latest /W4 /Zc:preprocessor /Zc:__cplusplus /EHsc /Zi /Od /MTd /diagnostics:caret
+
+# rule cpp
+#    depfile = $out.d
+#    deps = gcc
+#    command = clang++ -MD -MF $out.d $cflags $in -o $out
+
+# rule link
+#    command = clang++ $in -o $out
+
+rule stdmod
+   command = cmd /C cl /std:c++latest /EHsc /nologo /W4 /MTd /Zi /Od /c "%VCToolsInstallDir%\modules\std.ixx"
+
+rule cpp
+   deps = msvc
+   command = cl /nologo /showIncludes /Fo$out.d $cflags $in /Fe$out std.obj
+
+rule compile_commands
+   command = cmd /C ninja -t compdb > $out
+
+build compile_commands.json: compile_commands build.ninja
+
+build std.ifc: stdmod
+# build day1.exe: cpp ../day1.cpp | std.ifc
+build day4.exe: cpp ../day4.cpp | std.ifc
