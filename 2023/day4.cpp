@@ -39,27 +39,26 @@ std::istream& operator >>(std::istream& in, card& card)
 
 int main()
 {
-	auto card_matches =
-		std::views::istream<card>(std::cin) |
-		std::views::transform(&card::matches) |
-		std::ranges::to<std::vector>();
-
-	auto card_values =
-		card_matches |
-		std::views::transform([](int n) { return n ? 1 << (n - 1) : 0; });
+	auto matches =
+		std::views::istream<card>(std::cin) | std::views::transform(&card::matches);
 
 #if 0
-	auto sum = std::reduce(std::begin(card_values), std::end(card_values), 0LL);
+	auto sum = std::ranges::fold_left(
+		matches | std::views::transform([](int m) { return m ? 1 << (m - 1) : 0; }), 0LL, std::plus());
 #else
-	std::vector<int> copies(card_matches.size(), 1);
+	auto card_matches = matches | std::ranges::to<std::vector>();
 
-	for (auto [n, matches] : std::views::enumerate(card_matches))
+	std::vector<int> delta(card_matches.size());
+
+	long long sum = 0;
+	int curr_cards = 1;
+
+	for (auto [i, m] : std::views::enumerate(card_matches))
 	{
-		for (auto i = n + 1; i <= n + matches; ++i)
-			copies[i] += copies[n];
+		sum += curr_cards;
+		delta[i + m] -= curr_cards;
+		curr_cards += curr_cards + delta[i];
 	}
-
-	auto sum = std::reduce(std::begin(copies), std::end(copies), 0LL);
 #endif
 
 	std::cout << sum << '\n';
