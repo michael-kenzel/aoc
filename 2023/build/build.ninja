@@ -14,7 +14,7 @@ rule stdmod
 
 rule cpp
    deps = msvc
-   command = cl /nologo /showIncludes /Fo$out.d $cflags $in /Fe$out std.obj
+   command = cl /nologo /showIncludes $cflags $in /Fe$out std.obj
 
 rule compile_commands
    command = cmd /C ninja -t compdb > $out
