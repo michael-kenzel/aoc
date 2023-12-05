@@ -23,5 +23,6 @@ build compile_commands.json: compile_commands build.ninja
 
 build std.ifc: stdmod
 # build day1.exe: cpp ../day1.cpp | std.ifc
-build day2.exe: cpp ../day2.cpp | std.ifc
+# build day2.exe: cpp ../day2.cpp | std.ifc
 # build day4.exe: cpp ../day4.cpp | std.ifc
+build day5.exe: cpp ../day5.cpp | std.ifc
